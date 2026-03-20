@@ -7,6 +7,11 @@ For older change log history see the [historic changelog](HISTORIC_CHANGELOG.md)
 
 ## [Unreleased]
 
+- Vhd
+  - `Test-TargetResource` no longer throws when `Path` or `ParentPath` does
+    not exist. Returns the correct boolean based on `Ensure` instead of
+    aborting the configuration - Fixes
+    [Issue #225](https://github.com/dsccommunity/HyperVDsc/issues/225).
 - HyperVDsc
   - BREAKING CHANGE
     - Renamed _xHyper-V_ to _HyperVDsc - fixes [Issue #69](https://github.com/dsccommunity/HyperVDsc/issues/213).
