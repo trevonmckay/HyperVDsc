@@ -10,7 +10,10 @@ For older change log history see the [historic changelog](HISTORIC_CHANGELOG.md)
 - Vhd
   - `Test-TargetResource` no longer throws when `Path` or `ParentPath` does
     not exist. Returns the correct boolean based on `Ensure` instead of
-    aborting the configuration - Fixes
+    aborting the configuration. This aligns with the
+    [guidance from Microsoft](https://learn.microsoft.com/powershell/dsc/resources/authoringresourcemof?view=dsc-1.1)
+    that `Test-TargetResource` should return `$false` when the resource is
+    not in the desired state, not throw an exception - Fixes
     [Issue #225](https://github.com/dsccommunity/HyperVDsc/issues/225).
 - HyperVDsc
   - BREAKING CHANGE
