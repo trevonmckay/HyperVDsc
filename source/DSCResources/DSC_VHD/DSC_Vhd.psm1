@@ -311,7 +311,7 @@ function Test-TargetResource
     {
         if (!(Test-Path -Path $ParentPath))
         {
-            Write-Verbose -Message "$ParentPath does not exist."
+            Write-Verbose -Message ($script:localizedData.PathDoesNotExist -f $ParentPath)
             return ($Ensure -eq 'Absent')
         }
 
@@ -324,7 +324,7 @@ function Test-TargetResource
 
     if (!(Test-Path -Path $Path))
     {
-        Write-Verbose -Message "$Path does not exist."
+        Write-Verbose -Message ($script:localizedData.PathDoesNotExist -f $Path)
         return ($Ensure -eq 'Absent')
     }
 
