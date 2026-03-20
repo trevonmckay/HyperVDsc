@@ -38,7 +38,7 @@ function Get-TargetResource
     $vm = Get-VM -Name $VMName -ErrorAction SilentlyContinue
     if ($null -eq $vm)
     {
-        Write-Verbose -Message ($script:localizedData.DiskNotFound -f $Path, $VMName)
+        Write-Verbose -Message ($script:localizedData.VMNotFound -f $VMName)
         return @{
             VMName             = $VMName
             Path               = $null
