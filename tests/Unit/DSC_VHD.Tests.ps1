@@ -148,11 +148,27 @@ try
             }
 
             Context 'ParentPath specified' {
-                It 'Should throw when ParentPath does not exist' {
+                It 'Should return $false when ParentPath does not exist and Ensure is Present' {
+                    Mock -CommandName Test-Path -MockWith { $false }
+
+                    $result = Test-TargetResource -Name 'server' -Path 'C:\VMs' -Type 'Differencing' -ParentPath 'c:\boguspath' -Ensure 'Present'
+
+                    $result | Should -BeFalse
+                }
+
+                It 'Should return $true when ParentPath does not exist and Ensure is Absent' {
+                    Mock -CommandName Test-Path -MockWith { $false }
+
+                    $result = Test-TargetResource -Name 'server' -Path 'C:\VMs' -Type 'Differencing' -ParentPath 'c:\boguspath' -Ensure 'Absent'
+
+                    $result | Should -BeTrue
+                }
+
+                It 'Should not throw when ParentPath does not exist' {
                     Mock -CommandName Test-Path -MockWith { $false }
 
                     { Test-TargetResource -Name 'server' -Path 'C:\VMs' -Type 'Differencing' -ParentPath 'c:\boguspath' } |
-                        Should -Throw 'c:\boguspath does not exists'
+                        Should -Not -Throw
                 }
 
                 # "Generation $Generation should match ParentPath extension $($ParentPath.Split('.')[-1])"
@@ -165,11 +181,27 @@ try
             }
 
             Context 'Path does not exist' {
-                It 'Should throw when the path does not exist' {
+                It 'Should return $false when Ensure is Present' {
+                    Mock -CommandName Test-Path -MockWith { $false }
+
+                    $result = Test-TargetResource -Name 'server.vhdx' -Path 'C:\VMs' -Type 'Fixed' -MaximumSizeBytes 1GB -Ensure 'Present'
+
+                    $result | Should -BeFalse
+                }
+
+                It 'Should return $true when Ensure is Absent' {
+                    Mock -CommandName Test-Path -MockWith { $false }
+
+                    $result = Test-TargetResource -Name 'server.vhdx' -Path 'C:\VMs' -Type 'Fixed' -MaximumSizeBytes 1GB -Ensure 'Absent'
+
+                    $result | Should -BeTrue
+                }
+
+                It 'Should not throw' {
                     Mock -CommandName Test-Path -MockWith { $false }
 
                     { Test-TargetResource -Name 'server.vhdx' -Path 'C:\VMs' -Type 'Fixed' -MaximumSizeBytes 1GB } |
-                        Should -Throw 'C:\VMs does not exists'
+                        Should -Not -Throw
                 }
             }
 
