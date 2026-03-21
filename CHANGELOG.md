@@ -10,7 +10,10 @@ For older change log history see the [historic changelog](HISTORIC_CHANGELOG.md)
 - VMHardDiskDrive
   - `Get-TargetResource` no longer throws when the VM does not exist. Returns
     `Ensure = 'Absent'` so `Test-TargetResource` correctly reports the resource
-    is not in desired state instead of aborting the configuration - Fixes
+    is not in desired state instead of aborting the configuration. This aligns
+    with the [guidance from Microsoft](https://learn.microsoft.com/powershell/dsc/resources/authoringresourcemof)
+    that `Get-TargetResource` must return a hashtable representing the current
+    state of the resource - Fixes
     [Issue #223](https://github.com/dsccommunity/HyperVDsc/issues/223).
 - HyperVDsc
   - BREAKING CHANGE
