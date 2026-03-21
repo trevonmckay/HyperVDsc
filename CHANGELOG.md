@@ -14,7 +14,7 @@ For older change log history see the [historic changelog](HISTORIC_CHANGELOG.md)
     [guidance from Microsoft](https://learn.microsoft.com/powershell/dsc/resources/authoringresourcemof?view=dsc-1.1)
     that `Test-TargetResource` should return `$false` when the resource is
     not in the desired state, not throw an exception - Fixes
-    [Issue #225](https://github.com/dsccommunity/HyperVDsc/issues/225).
+    [issue #225](https://github.com/dsccommunity/HyperVDsc/issues/225).
 - HyperVDsc
   - BREAKING CHANGE
     - Renamed _xHyper-V_ to _HyperVDsc - fixes [Issue #69](https://github.com/dsccommunity/HyperVDsc/issues/213).
