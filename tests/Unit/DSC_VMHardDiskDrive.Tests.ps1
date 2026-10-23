@@ -50,7 +50,6 @@ try
             Mock -CommandName Assert-Module
 
             It 'Should return a [System.Collections.Hashtable] object type' {
-                Mock -CommandName Get-VM { return [PSCustomObject]@{ Name = $testVMName } }
                 Mock -CommandName Get-VMHardDiskDrive { return $stubHardDiskDrive }
 
                 $result = Get-TargetResource -VMName $testVMName -Path $testhardDiskPath
@@ -59,7 +58,6 @@ try
             }
 
             It 'Should return "Present" when hard disk is attached' {
-                Mock -CommandName Get-VM { return [PSCustomObject]@{ Name = $testVMName } }
                 Mock -CommandName Get-VMHardDiskDrive { return $stubHardDiskDrive }
 
                 $result = Get-TargetResource -VMName $testVMName -Path $testhardDiskPath
@@ -68,7 +66,6 @@ try
             }
 
             It 'Should return "Absent" when hard disk is not attached' {
-                Mock -CommandName Get-VM { return [PSCustomObject]@{ Name = $testVMName } }
                 Mock -CommandName Get-VMHardDiskDrive
 
                 $result = Get-TargetResource -VMName $testVMName -Path $testhardDiskPath
@@ -76,28 +73,38 @@ try
                 $result.Ensure | Should -Be 'Absent'
             }
 
-            It 'Should return "Absent" when VM does not exist' {
-                Mock -CommandName Get-VM
-                Mock -CommandName Get-VMHardDiskDrive
+            Context 'When the VM does not exist' {
+                Mock -CommandName Get-VMHardDiskDrive {
+                    Write-Error -Message ('Hyper-V was unable to find a virtual machine with name "{0}".' -f $VMName) -Category ObjectNotFound -ErrorAction Stop
+                }
 
-                $result = Get-TargetResource -VMName $testVMName -Path $testhardDiskPath
+                It 'Should not throw' {
+                    { Get-TargetResource -VMName $testVMName -Path $testhardDiskPath } | Should -Not -Throw
+                }
 
-                $result.Ensure | Should -Be 'Absent'
-                $result.Path | Should -BeNullOrEmpty
+                It 'Should return "Absent"' {
+                    $result = Get-TargetResource -VMName $testVMName -Path $testhardDiskPath
+
+                    $result.Ensure | Should -Be 'Absent'
+                    $result.VMName | Should -Be $testVMName
+                    $result.Path | Should -BeNullOrEmpty
+                    $result.ControllerType | Should -BeNullOrEmpty
+                    $result.ControllerNumber | Should -BeNullOrEmpty
+                    $result.ControllerLocation | Should -BeNullOrEmpty
+                }
             }
 
-            It 'Should not call Get-VMHardDiskDrive when VM does not exist' {
-                Mock -CommandName Get-VM
-                Mock -CommandName Get-VMHardDiskDrive
+            It 'Should throw when Get-VMHardDiskDrive fails for a reason other than a missing VM' {
+                $errorMessage = 'You do not have the required permission to complete this task.'
+                Mock -CommandName Get-VMHardDiskDrive {
+                    Write-Error -Message $errorMessage -Category NotSpecified -ErrorAction Stop
+                }
 
-                $null = Get-TargetResource -VMName $testVMName -Path $testhardDiskPath
-
-                Assert-MockCalled -CommandName Get-VMHardDiskDrive -Times 0 -Scope It
+                { Get-TargetResource -VMName $testVMName -Path $testhardDiskPath } | Should -Throw $errorMessage
             }
 
             It 'Should assert Hyper-V module is installed' {
                 Mock -CommandName Assert-Module
-                Mock -CommandName Get-VM { return [PSCustomObject]@{ Name = $testVMName } }
                 Mock -CommandName Get-VMHardDiskDrive { return $stubHardDiskDrive }
 
                 $null = Get-TargetResource -VMName $testVMName -Path $testhardDiskPath
