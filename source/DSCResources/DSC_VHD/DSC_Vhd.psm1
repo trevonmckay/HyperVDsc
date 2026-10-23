@@ -311,7 +311,8 @@ function Test-TargetResource
     {
         if (!(Test-Path -Path $ParentPath))
         {
-            throw "$ParentPath does not exists"
+            Write-Verbose -Message ($script:localizedData.PathDoesNotExist -f $ParentPath)
+            return ($Ensure -eq 'Absent')
         }
 
         # Check if the generation matches parenting disk
@@ -323,7 +324,8 @@ function Test-TargetResource
 
     if (!(Test-Path -Path $Path))
     {
-        throw "$Path does not exists"
+        Write-Verbose -Message ($script:localizedData.PathDoesNotExist -f $Path)
+        return ($Ensure -eq 'Absent')
     }
 
     # Construct the full path for the vhdFile
